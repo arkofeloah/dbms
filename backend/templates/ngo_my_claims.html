@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}My Claims — FoodNet{% endblock %}
+{% block meta_desc %}View all food listings your NGO has claimed and manage pickups.{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="h3 fw-bold mb-0"><i class="bi bi-bag-check me-2 text-info"></i>My Claims</h1>
+    <p class="text-muted small mb-0">All food listings your NGO has claimed, with pickup status.</p>
+  </div>
+  <a href="{{ url_for('ngo_dashboard') }}" class="btn btn-outline-success btn-sm fw-semibold" id="browse-listings-btn">
+    <i class="bi bi-search me-1"></i>Browse Available Listings
+  </a>
+</div>
+
+{% if claims %}
+<div class="row g-3">
+  {% for c in claims %}
+  <div class="col-md-6 col-xl-4">
+    <div class="card h-100 claim-card shadow-sm border-0">
+      <div class="card-body d-flex flex-column">
+
+        {# ── Food details ──────────────────────────────── #}
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h6 fw-bold mb-0">{{ c.food_type }}</h2>
+          {# Claim status badge #}
+          {% if c.claim_status == 'confirmed' %}
+            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">Confirmed</span>
+          {% else %}
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Pending</span>
+          {% endif %}
+        </div>
+
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-box-seam me-1"></i>{{ c.quantity }} kg
+        </p>
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-clock me-1"></i>Claimed: {{ c.claimed_at.strftime('%d %b %Y, %H:%M') }}
+        </p>
+        <p class="mb-2 small {% if c.listing_status == 'expired' %}text-danger{% else %}text-muted{% endif %}">
+          <i class="bi bi-hourglass-split me-1"></i>
+          Food expires: {{ c.expiry_datetime.strftime('%d %b %Y, %H:%M') }}
+        </p>
+
+        {# ── Divider ───────────────────────────────────── #}
+        <hr class="my-2">
+
+        {# ── Pickup section ────────────────────────────── #}
+        {% if c.pickup_id %}
+          {# Pickup already exists — show its status #}
+          <div class="pickup-info small">
+            <p class="mb-1 fw-medium">
+              <i class="bi bi-truck me-1 text-primary"></i>Pickup
+              {% if c.pickup_status == 'completed' %}
+                <span class="badge bg-success ms-1">Completed</span>
+              {% elif c.pickup_status == 'missed' %}
+                <span class="badge bg-danger ms-1">Missed</span>
+              {% else %}
+                <span class="badge bg-primary ms-1">Scheduled</span>
+                {% if c.is_overdue %}
+                  <span class="badge bg-warning text-dark border border-warning-subtle ms-1"><i class="bi bi-exclamation-circle me-1"></i>Overdue</span>
+                {% endif %}
+              {% endif %}
+            </p>
+            <p class="mb-0 text-muted">
+              <i class="bi bi-calendar-event me-1"></i>
+              Scheduled: {{ c.scheduled_time.strftime('%d %b %Y, %H:%M') }}
+            </p>
+            {% if c.actual_time %}
+            <p class="mb-0 text-success small">
+              <i class="bi bi-check-circle me-1"></i>
+              Collected: {{ c.actual_time.strftime('%d %b %Y, %H:%M') }}
+            </p>
+            {% endif %}
+
+            {% if c.pickup_status == 'scheduled' %}
+            <div class="mt-3 d-flex gap-2">
+              <form method="POST" action="{{ url_for('complete_pickup', pickup_id=c.pickup_id) }}" class="flex-grow-1 mb-0">
+                <input type="hidden" name="status" value="completed">
+                <button type="submit" class="btn btn-sm btn-success w-100 fw-semibold" id="complete-btn-{{ c.pickup_id }}">
+                  <i class="bi bi-check-circle me-1"></i>Mark Completed
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('complete_pickup', pickup_id=c.pickup_id) }}" class="flex-grow-1 mb-0">
+                <input type="hidden" name="status" value="missed">
+                <button type="submit" class="btn btn-sm btn-outline-danger w-100 fw-semibold" id="missed-btn-{{ c.pickup_id }}">
+                  <i class="bi bi-x-circle me-1"></i>Mark Missed
+                </button>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+        {% else %}
+          {# No pickup yet — show Schedule button #}
+          <div class="mt-auto">
+            <a href="{{ url_for('schedule_pickup', claim_id=c.claim_id) }}"
+               class="btn btn-success btn-sm fw-semibold w-100"
+               id="schedule-btn-{{ c.claim_id }}">
+              <i class="bi bi-calendar-plus me-1"></i>Schedule Pickup
+            </a>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state text-center py-5">
+  <i class="bi bi-bag-x display-4 text-muted d-block mb-3"></i>
+  <h2 class="h5 text-muted">No claims yet</h2>
+  <p class="text-muted">Browse available listings and claim food for your organisation.</p>
+  <a href="{{ url_for('ngo_dashboard') }}" class="btn btn-info text-white" id="go-browse-btn">
+    <i class="bi bi-search me-1"></i>Browse Listings
+  </a>
+</div>
+{% endif %}
+{% endblock %}

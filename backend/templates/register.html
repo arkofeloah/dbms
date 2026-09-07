@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Register — FoodNet{% endblock %}
+{% block meta_desc %}Create a donor or NGO account on FoodNet.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card auth-card shadow-lg">
+      <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="auth-icon mx-auto mb-3">
+            <i class="bi bi-person-plus fs-2 text-success"></i>
+          </div>
+          <h1 class="h3 fw-bold">Create an account</h1>
+          <p class="text-muted small">Join FoodNet as a donor or NGO</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('register') }}" id="register-form" novalidate>
+
+          <!-- ── Role selector ──────────────────────────────────── -->
+          <div class="mb-3">
+            <label class="form-label fw-medium">I am a</label>
+            <div class="d-flex gap-3">
+              <div class="form-check flex-fill border rounded p-3 role-card" id="role-card-donor">
+                <input class="form-check-input" type="radio" name="role" id="role-donor"
+                       value="donor" checked onchange="toggleFields()">
+                <label class="form-check-label w-100" for="role-donor">
+                  <i class="bi bi-shop me-2 text-warning"></i><strong>Donor</strong>
+                  <div class="text-muted small">Restaurant, store, or event</div>
+                </label>
+              </div>
+              <div class="form-check flex-fill border rounded p-3 role-card" id="role-card-ngo">
+                <input class="form-check-input" type="radio" name="role" id="role-ngo"
+                       value="ngo" onchange="toggleFields()">
+                <label class="form-check-label w-100" for="role-ngo">
+                  <i class="bi bi-people me-2 text-info"></i><strong>NGO</strong>
+                  <div class="text-muted small">Non-profit relief organisation</div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Personal info ──────────────────────────────────── -->
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label for="name" class="form-label fw-medium">Full name</label>
+              <input type="text" class="form-control" id="name" name="name"
+                     placeholder="Your name" required>
+            </div>
+            <div class="col-sm-6">
+              <label for="phone" class="form-label fw-medium">Phone <span class="text-muted">(optional)</span></label>
+              <input type="tel" class="form-control" id="phone" name="phone"
+                     placeholder="10-digit number" maxlength="15">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label fw-medium">Email address</label>
+            <input type="email" class="form-control" id="reg-email" name="email"
+                   placeholder="you@example.com" required autocomplete="email">
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label fw-medium">Password</label>
+            <input type="password" class="form-control" id="reg-password" name="password"
+                   placeholder="Min. 8 characters" required minlength="8" autocomplete="new-password">
+          </div>
+
+          <!-- ── Organisation info ──────────────────────────────── -->
+          <div class="mb-3">
+            <label for="org_name" class="form-label fw-medium">Organisation name</label>
+            <input type="text" class="form-control" id="org_name" name="org_name"
+                   placeholder="Your org name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label fw-medium">Address</label>
+            <input type="text" class="form-control" id="address" name="address"
+                   placeholder="Full address" required>
+          </div>
+
+          <!-- ── Donor-only: type ───────────────────────────────── -->
+          <div id="donor-fields" class="mb-3">
+            <label for="donor_type" class="form-label fw-medium">Donor type</label>
+            <select class="form-select" id="donor_type" name="donor_type">
+              <option value="restaurant">🍽️ Restaurant</option>
+              <option value="store">🛒 Store / Supermarket</option>
+              <option value="event">🎉 Event</option>
+            </select>
+          </div>
+
+          <!-- ── NGO-only: capacity ─────────────────────────────── -->
+          <div id="ngo-fields" class="mb-3 d-none">
+            <label for="capacity" class="form-label fw-medium">Daily capacity (kg)</label>
+            <input type="number" class="form-control" id="capacity" name="capacity"
+                   placeholder="e.g. 200" min="1">
+          </div>
+
+          <button type="submit" class="btn btn-success w-100 fw-semibold py-2 mt-2" id="register-btn">
+            <i class="bi bi-check-circle me-2"></i>Create Account
+          </button>
+        </form>
+
+        <hr class="my-4">
+        <p class="text-center text-muted small mb-0">
+          Already have an account?
+          <a href="{{ url_for('login') }}" class="text-success fw-medium">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleFields() {
+  const isDonor = document.getElementById('role-donor').checked;
+  document.getElementById('donor-fields').classList.toggle('d-none', !isDonor);
+  document.getElementById('ngo-fields').classList.toggle('d-none', isDonor);
+  document.getElementById('role-card-donor').classList.toggle('border-success', isDonor);
+  document.getElementById('role-card-ngo').classList.toggle('border-success', !isDonor);
+}
+// Init on load
+toggleFields();
+document.getElementById('role-donor').addEventListener('change', toggleFields);
+document.getElementById('role-ngo').addEventListener('change', toggleFields);
+</script>
+{% endblock %}

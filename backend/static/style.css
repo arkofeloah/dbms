@@ -1,0 +1,176 @@
+/* ============================================================
+   FoodNet — style.css
+   Custom design layer on top of Bootstrap 5
+   ============================================================ */
+
+/* ── Fonts ──────────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* ── Navbar ─────────────────────────────────────────────────── */
+#main-nav {
+  background: linear-gradient(135deg, #1a3a2a 0%, #0d2418 100%);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  padding: 0.75rem 0;
+}
+
+#main-nav .navbar-brand {
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+/* Role badges in navbar */
+.badge-role-donor  { background-color: #f59e0b; color: #1a1a1a; }
+.badge-role-ngo    { background-color: #0ea5e9; color: #fff; }
+.badge-role-admin  { background-color: #8b5cf6; color: #fff; }
+
+/* ── Auth cards ─────────────────────────────────────────────── */
+.auth-card {
+  border: none;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.auth-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Listing & claim cards ──────────────────────────────── */
+.listing-card,
+.claim-card {
+  border-radius: 0.875rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  background: #fff;
+}
+
+.listing-card:hover,
+.claim-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10) !important;
+}
+
+/* ── Status badges ──────────────────────────────────────────── */
+.status-badge-available {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+  border-radius: 0.375rem;
+  font-size: 0.72rem;
+  padding: 0.25em 0.6em;
+}
+
+.status-badge-claimed {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
+  border-radius: 0.375rem;
+  font-size: 0.72rem;
+  padding: 0.25em 0.6em;
+}
+
+.status-badge-expired {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 0.375rem;
+  font-size: 0.72rem;
+  padding: 0.25em 0.6em;
+}
+
+/* ── KPI cards (admin dashboard) ───────────────────────────── */
+.kpi-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: box-shadow 0.18s ease;
+}
+
+.kpi-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.kpi-value {
+  color: #111827;
+  line-height: 1.2;
+}
+
+/* ── Tables ─────────────────────────────────────────────────── */
+.table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+  border-bottom-width: 1px;
+  white-space: nowrap;
+}
+
+/* ── Role selector cards (register page) ────────────────────── */
+.role-card {
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.role-card:hover {
+  background-color: #f0fdf4;
+}
+
+.role-card .form-check-input {
+  float: none;
+  margin: 0;
+  position: absolute;
+  opacity: 0;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.footer {
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ── Empty states ───────────────────────────────────────────── */
+.empty-state {
+  opacity: 0.75;
+}
+
+/* ── Form controls ──────────────────────────────────────────── */
+.form-control:focus,
+.form-select:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 0.2rem rgba(22, 163, 74, 0.2);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  border: none;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #15803d, #166534);
+  transform: translateY(-1px);
+}
+
+/* ── Alerts ─────────────────────────────────────────────────── */
+#flash-container .alert {
+  border-radius: 0.75rem;
+  border-left: 4px solid transparent;
+}
+
+.alert-success { border-left-color: #16a34a; }
+.alert-danger   { border-left-color: #dc2626; }
+.alert-warning  { border-left-color: #d97706; }
+.alert-info     { border-left-color: #0284c7; }

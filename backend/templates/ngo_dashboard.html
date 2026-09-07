@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}NGO Dashboard — FoodNet{% endblock %}
+{% block meta_desc %}Browse and claim available food listings on FoodNet.{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h1 class="h3 fw-bold mb-0"><i class="bi bi-people me-2 text-info"></i>Available Food Listings</h1>
+  <p class="text-muted small">Live feed — sorted by earliest expiry. Claim quickly!</p>
+</div>
+
+{% if listings %}
+<div class="row g-3">
+  {% for l in listings %}
+  <div class="col-md-6 col-xl-4">
+    <div class="card h-100 listing-card shadow-sm border-0">
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h6 fw-bold mb-0">{{ l.food_type }}</h2>
+          <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+            <i class="bi bi-check-circle me-1"></i>Available
+          </span>
+        </div>
+
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-shop me-1"></i>{{ l.donor_name }}
+        </p>
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-box-seam me-1"></i>{{ l.quantity }} kg
+        </p>
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-calendar-event me-1"></i>Expires: {{ l.expiry_datetime.strftime('%d %b %Y, %H:%M') }}
+        </p>
+
+        {% if l.minutes_until_expiry is not none %}
+          {% set mins = l.minutes_until_expiry %}
+          {% if mins < 60 %}
+            <p class="mb-2 small text-danger fw-semibold">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>Expires in {{ mins }} min!
+            </p>
+          {% elif mins < 180 %}
+            <p class="mb-2 small text-warning fw-semibold">
+              <i class="bi bi-clock me-1"></i>Expires in {{ (mins // 60) }}h {{ (mins % 60) }}m
+            </p>
+          {% else %}
+            <p class="mb-2 small text-muted">
+              <i class="bi bi-clock me-1"></i>{{ (mins // 60) }}h {{ (mins % 60) }}m remaining
+            </p>
+          {% endif %}
+        {% endif %}
+
+        <div class="mt-auto">
+          <form method="POST" action="{{ url_for('claim_listing', listing_id=l.listing_id) }}"
+                id="claim-form-{{ l.listing_id }}"
+                onsubmit="return confirm('Claim this listing for your NGO?')">
+            <button type="submit" class="btn btn-info btn-sm fw-semibold w-100"
+                    id="claim-btn-{{ l.listing_id }}">
+              <i class="bi bi-hand-index me-1"></i>Claim Listing
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state text-center py-5">
+  <i class="bi bi-emoji-smile display-4 text-muted d-block mb-3"></i>
+  <h2 class="h5 text-muted">No available listings right now</h2>
+  <p class="text-muted">Check back soon — donors post regularly.</p>
+</div>
+{% endif %}
+
+<!-- My scheduled/pending pickups -->
+{% endblock %}

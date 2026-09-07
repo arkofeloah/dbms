@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Schedule Pickup — FoodNet{% endblock %}
+{% block meta_desc %}Schedule a pickup for your claimed food listing.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card shadow-lg border-0">
+      <div class="card-body p-4 p-md-5">
+        <h1 class="h4 fw-bold mb-1">
+          <i class="bi bi-truck me-2 text-success"></i>Schedule a Pickup
+        </h1>
+        <p class="text-muted small mb-4">Confirm the time your team will collect the food.</p>
+
+        <!-- Claim summary -->
+        <div class="alert alert-info border-0 mb-4 small">
+          <strong><i class="bi bi-bag-check me-1"></i>{{ claim.food_type }}</strong>
+          &nbsp;·&nbsp; {{ claim.quantity }} kg
+          &nbsp;·&nbsp; Expires {{ claim.expiry_datetime.strftime('%d %b %Y, %H:%M') }}
+        </div>
+
+        {% if existing_pickup %}
+          <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            A pickup is already scheduled for this claim (pickup #{{ existing_pickup.pickup_id }}).
+          </div>
+          <a href="{{ url_for('ngo_dashboard') }}" class="btn btn-outline-secondary w-100">
+            Back to Dashboard
+          </a>
+        {% else %}
+          <form method="POST" action="{{ url_for('schedule_pickup', claim_id=claim.claim_id) }}"
+                id="schedule-pickup-form" novalidate>
+            <div class="mb-4">
+              <label for="scheduled_time" class="form-label fw-medium">Scheduled pickup time</label>
+              <input type="datetime-local" class="form-control" id="scheduled_time"
+                     name="scheduled_time" required>
+              <div class="form-text">Must be before the food's expiry time.</div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success fw-semibold flex-fill py-2"
+                      id="confirm-pickup-btn">
+                <i class="bi bi-calendar-check me-1"></i>Confirm Pickup
+              </button>
+              <a href="{{ url_for('ngo_dashboard') }}" class="btn btn-outline-secondary py-2"
+                 id="cancel-pickup-btn">
+                Cancel
+              </a>
+            </div>
+          </form>
+
+          <script>
+            // Default scheduled time to 2 hours from now
+            const dt = new Date(Date.now() + 2 * 3600 * 1000);
+            const pad = n => String(n).padStart(2, '0');
+            document.getElementById('scheduled_time').value =
+              `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+          </script>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

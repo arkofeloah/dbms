@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Donor Dashboard — FoodNet{% endblock %}
+{% block meta_desc %}Manage your food listings on FoodNet.{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="h3 fw-bold mb-0"><i class="bi bi-shop me-2 text-warning"></i>My Food Listings</h1>
+    <p class="text-muted small mb-0">Everything you've posted, sorted newest first.</p>
+  </div>
+  <a href="{{ url_for('post_listing') }}" class="btn btn-success fw-semibold" id="post-listing-btn">
+    <i class="bi bi-plus-lg me-1"></i>Post New Listing
+  </a>
+</div>
+
+{% if listings %}
+<div class="row g-3">
+  {% for l in listings %}
+  <div class="col-md-6 col-xl-4">
+    <div class="card h-100 listing-card shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h6 fw-bold mb-0">{{ l.food_type }}</h2>
+          <span class="badge status-badge-{{ l.status }}">{{ l.status | capitalize }}</span>
+        </div>
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-box-seam me-1"></i>{{ l.quantity }} kg
+        </p>
+        <p class="mb-1 text-muted small">
+          <i class="bi bi-clock me-1"></i>Posted: {{ l.posted_at.strftime('%d %b %Y, %H:%M') }}
+        </p>
+        <p class="mb-0 small {% if l.status == 'expired' %}text-danger{% else %}text-muted{% endif %}">
+          <i class="bi bi-hourglass-split me-1"></i>Expires: {{ l.expiry_datetime.strftime('%d %b %Y, %H:%M') }}
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state text-center py-5">
+  <i class="bi bi-inbox display-4 text-muted d-block mb-3"></i>
+  <h2 class="h5 text-muted">No listings yet</h2>
+  <p class="text-muted">Start by posting your first food listing.</p>
+  <a href="{{ url_for('post_listing') }}" class="btn btn-success">
+    <i class="bi bi-plus-lg me-1"></i>Post Listing
+  </a>
+</div>
+{% endif %}
+{% endblock %}
