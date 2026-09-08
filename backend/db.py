@@ -13,13 +13,24 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
 
 def get_connection():
-    """Return a new mysql.connector connection to food_waste_db."""
-    return mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        user=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"],
-        database=os.environ["DB_NAME"],
-        autocommit=False,          # we manage transactions explicitly
-        charset="utf8mb4",
-        use_pure=True,             # pure-Python driver (no C extension required)
-    )
+    """Return a new mysql.connector connection to the database."""
+    conn_params = {
+        "host": os.environ["DB_HOST"],
+        "port": int(os.environ.get("DB_PORT", 3306)),
+        "user": os.environ["DB_USER"],
+        "password": os.environ["DB_PASSWORD"],
+        "database": os.environ["DB_NAME"],
+        "autocommit": False,          # we manage transactions explicitly
+        "charset": "utf8mb4",
+        "use_pure": True,             # pure-Python driver (no C extension required)
+        "ssl_disabled": os.environ.get("DB_SSL_DISABLED", "false").lower() in ("true", "1"),
+    }
+
+    if os.environ.get("DB_SSL_CA"):
+        conn_params["ssl_ca"] = os.environ["DB_SSL_CA"]
+    if os.environ.get("DB_SSL_CERT"):
+        conn_params["ssl_cert"] = os.environ["DB_SSL_CERT"]
+    if os.environ.get("DB_SSL_KEY"):
+        conn_params["ssl_key"] = os.environ["DB_SSL_KEY"]
+
+    return mysql.connector.connect(**conn_params)
