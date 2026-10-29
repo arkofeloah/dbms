@@ -1,11 +1,39 @@
+# Environment and credentials
 .env
+.env.*
+*.env
+*.env.*
+backend/.env
+backend/.env.*
+!.env.example
+!backend/.env.example
+
+# Python bytecode & cache
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
 venv/
 .venv/
-*.egg-info/
-dist/
+env/
+ENV/
+
+# Distribution & builds
 build/
-backend/.env
+dist/
+*.egg-info/
+
+# IDE & Editor settings
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Local Database dumps and backups
+*.bak
+*.backup
+*.dump
+/backups/
+/dumps/
